@@ -2,6 +2,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -16,6 +17,9 @@ AFPSCharacter::AFPSCharacter()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	// Enable Crouch
+	ACharacter::GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 void AFPSCharacter::BeginPlay(){
@@ -34,6 +38,9 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAxis("LookUp", this, &AFPSCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &AFPSCharacter::Turn);
+
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AFPSCharacter::StartCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AFPSCharacter::EndCrouch);
 }
 
 void AFPSCharacter::MoveForward(float Value) {
@@ -50,4 +57,12 @@ void AFPSCharacter::LookUp(float Value) {
 
 void AFPSCharacter::Turn(float Value) {
 	AddControllerYawInput(Value);
+}
+
+void AFPSCharacter::StartCrouch() {
+	Crouch();
+}
+
+void AFPSCharacter::EndCrouch() {
+	UnCrouch();
 }

@@ -32,4 +32,6 @@ protected:
 	void MoveRight(float Value);
 	void LookUp(float Value);
 	void Turn(float Value);
+	void StartCrouch();
+	void EndCrouch();
 };
